@@ -1,3 +1,4 @@
+SCREEN _NEWIMAGE(330, 350, 32)
 DIM gameBoard(3, 3) AS STRING
 cPlayer$ = " X"
 true = 1
@@ -59,7 +60,7 @@ moveMade = false
 WHILE moveMade = false
 
     GOSUB selectSpace
-    GOSUB drawBoard
+
 WEND
 RETURN
 
@@ -134,6 +135,12 @@ PRINT "             |            |             "
 PRINT "     "; gameBoard(3, 1); "      |     "; gameBoard(3, 2); "     |     "; gameBoard(3, 3); "       "
 PRINT "             |            |             "
 PRINT "             |            |             "
+LINE (106, 0)-(109, 270), _RGB(227, 177, 255), BF
+LINE (210, 0)-(213, 270), _RGB(227, 177, 255), BF
+LINE (0, 86)-(335, 88), _RGB(227, 177, 255), BF
+LINE (0, 182)-(335, 184), _RGB(227, 177, 255), BF
+
+
 RETURN 'REMOVE THIS RETURN FOR A COOL EFFECT BUT A NONWORKING GAME
 
 
