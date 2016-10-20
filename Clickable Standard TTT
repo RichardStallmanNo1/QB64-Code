@@ -1,0 +1,183 @@
+SCREEN _NEWIMAGE(330, 350, 32)
+DIM gameBoard(3, 3) AS STRING
+cPlayer$ = " X"
+true = 1
+false = 0
+turns = 1
+gameWon = false
+FOR i = 1 TO 3 'row value
+    FOR x = 1 TO 3 'column value
+
+        IF i = 1 THEN
+            gameBoard(i + 2, x) = STR$(i + x - 1)
+        ELSE IF i = 2 THEN
+                gameBoard(i, x) = STR$(i + x + 1)
+            ELSE IF i = 3 THEN
+                    gameBoard(i - 2, x) = STR$(i + x + 3)
+
+                END IF
+            END IF
+        END IF
+    NEXT
+NEXT
+GOTO MAIN
+
+checkWinStatus:
+
+'checks rows, i.e. positions 1,2,3
+FOR row = 1 TO 3
+    IF gameBoard(row, 1) = gameBoard(row, 2) AND gameBoard(row, 1) = gameBoard(row, 3) THEN
+        gameWon = true
+        winner$ = gameBoard(row, 1)
+        RETURN
+    END IF
+NEXT
+
+'checks columns, i.e. positions 1, 4, 5
+FOR col = 1 TO 3
+    IF gameBoard(1, col) = gameBoard(2, col) AND gameBoard(1, col) = gameBoard(3, col) THEN
+        gameWon = true
+        winner$ = gameBoard(1, col)
+        RETURN
+    END IF
+NEXT
+
+'checks diagonals
+IF gameBoard(1, 1) = gameBoard(2, 2) AND gameBoard(1, 1) = gameBoard(3, 3) THEN
+    gameWon = true
+    winner$ = gameBoard(1, 1)
+    RETURN
+END IF
+IF gameBoard(1, 3) = gameBoard(2, 2) AND gameBoard(1, 3) = gameBoard(3, 1) THEN
+    gameWon = true
+    winner$ = gameBoard(1, 3)
+    RETURN
+END IF
+RETURN
+
+spacePick:
+moveMade = false
+WHILE moveMade = false
+
+    GOSUB selectSpace
+
+WEND
+RETURN
+
+mouseInput:
+DO
+    DO WHILE _MOUSEINPUT
+        IF _MOUSEX < 107.5 AND _MOUSEY < 87 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 7: RETURN
+        IF _MOUSEX < 211.5 AND _MOUSEY < 87 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 8: RETURN
+        IF _MOUSEX < 350 AND _MOUSEY < 87 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 9: RETURN
+        IF _MOUSEX < 107.5 AND _MOUSEY < 183 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 4: RETURN
+        IF _MOUSEX < 211.5 AND _MOUSEY < 183 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 5: RETURN
+        IF _MOUSEX < 350 AND _MOUSEY < 183 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 6: RETURN
+        IF _MOUSEX < 107.5 AND _MOUSEY < 279 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 1: RETURN
+        IF _MOUSEX < 211.5 AND _MOUSEY < 279 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 2: RETURN
+        IF _MOUSEX < 350 AND _MOUSEY < 279 AND _MOUSEBUTTON(1) = -1 THEN spaceP = 3: RETURN
+    LOOP
+LOOP UNTIL spaceP <> 0
+RETURN
+
+
+
+selectSpace:
+PRINT "Click on the space you'd like to go to"
+GOSUB mouseInput
+GOSUB checkTakenStatus
+IF takenStatus = true THEN
+    GOSUB drawBoard
+    PRINT "That space was taken"
+    GOTO selectSpace
+ELSE
+    gameBoard(i, x) = cPlayer$
+    moveMade = true
+END IF
+
+RETURN
+
+checkTakenStatus:
+SELECT CASE spaceP
+    CASE 1 'i is column; x is row
+        i = 3
+        x = 1
+    CASE 2
+        i = 3
+        x = 2
+    CASE 3
+        i = 3
+        x = 3
+    CASE 4
+        i = 2
+        x = 1
+    CASE 5
+        i = 2
+        x = 2
+    CASE 6
+        i = 2
+        x = 3
+    CASE 7
+        i = 1
+        x = 1
+    CASE 8
+        i = 1
+        x = 2
+    CASE 9
+        i = 1
+        x = 3
+END SELECT
+IF (gameBoard(i, x) = " X" OR gameBoard(i, x) = " O") THEN
+    takenStatus = true
+ELSE takenStatus = false
+END IF
+RETURN
+
+
+drawBoard:
+CLS
+'     " 13          | 12         | 13          "
+PRINT "             |            |             "
+PRINT "             |            |             "
+PRINT "     "; gameBoard(1, 1); "      |     "; gameBoard(1, 2); "     |     "; gameBoard(1, 3); "       "
+PRINT "             |            |             "
+PRINT "             |            |             "
+PRINT "-------------|------------|--------------"
+PRINT "             |            |             "
+PRINT "             |            |             "
+PRINT "     "; gameBoard(2, 1); "      |     "; gameBoard(2, 2); "     |     "; gameBoard(2, 3); "       "
+PRINT "             |            |             "
+PRINT "             |            |             "
+PRINT "-------------|------------|--------------"
+PRINT "             |            |             "
+PRINT "             |            |             "
+PRINT "     "; gameBoard(3, 1); "      |     "; gameBoard(3, 2); "     |     "; gameBoard(3, 3); "       "
+PRINT "             |            |             "
+PRINT "             |            |             "
+LINE (106, 0)-(109, 270), _RGB(227, 177, 255), BF
+LINE (210, 0)-(213, 270), _RGB(227, 177, 255), BF
+LINE (0, 86)-(335, 88), _RGB(227, 177, 255), BF
+LINE (0, 182)-(335, 184), _RGB(227, 177, 255), BF
+
+
+RETURN 'REMOVE THIS RETURN FOR A COOL EFFECT BUT A NONWORKING GAME
+
+
+
+
+
+
+MAIN:
+
+WHILE gameWon = false AND turns < 10
+
+    GOSUB drawBoard
+    GOSUB spacePick
+    GOSUB checkWinStatus
+    spaceP = 0
+    turns = turns + 1
+    IF cPlayer$ = " X" THEN cPlayer$ = " O" ELSE cPlayer$ = " X"
+WEND
+GOSUB drawBoard
+IF gameWon = false THEN PRINT "There was a cat! Better luck next time..." ELSE PRINT "Congratulations to"; winner$; " for winning!"
+
