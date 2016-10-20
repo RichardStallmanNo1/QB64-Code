@@ -252,25 +252,24 @@ SELECT CASE sbSel
 END SELECT
 SELECT CASE bbSel
     CASE 1 'i is column; x is row
-        IF board1(i, x) = " X" OR board1(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board1(i, x) = " X" OR board1(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 2
-        IF board2(i, x) = " X" OR board2(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board2(i, x) = " X" OR board2(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 3
-        IF board3(i, x) = " X" OR board3(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board3(i, x) = " X" OR board3(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 4
-        IF board4(i, x) = " X" OR board4(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board4(i, x) = " X" OR board4(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 5
-        IF board5(i, x) = " X" OR board5(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board5(i, x) = " X" OR board5(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 6
-        IF board6(i, x) = " X" OR board6(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board6(i, x) = " X" OR board6(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 7
-        IF board7(i, x) = " X" OR board7(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board7(i, x) = " X" OR board7(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 8
-        IF board8(i, x) = " X" OR board8(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board8(i, x) = " X" OR board8(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
     CASE 9
-        IF board9(i, x) = " X" OR board9(i, x) = " O" THEN GOSUB drawBoard: GOTO smallboardTurn
+        IF board9(i, x) = " X" OR board9(i, x) = " O" THEN GOSUB drawBoard: takenStatus = true ELSE takenStatus = false
 END SELECT
-takenStatus = false
 RETURN
 
 
