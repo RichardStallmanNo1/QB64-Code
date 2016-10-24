@@ -89,12 +89,13 @@ GOSUB checkTakenStatus
 IF takenStatus = true THEN
     GOSUB drawBoard
     PRINT "That space was taken"
+    spaceP = 0
     GOTO selectSpace
 ELSE
     gameBoard(i, x) = cPlayer$
     moveMade = true
 END IF
-
+spaceP = 0
 RETURN
 
 checkTakenStatus:
@@ -174,10 +175,10 @@ WHILE gameWon = false AND turns < 10
     GOSUB drawBoard
     GOSUB spacePick
     GOSUB checkWinStatus
-    spaceP = 0
     turns = turns + 1
     IF cPlayer$ = " X" THEN cPlayer$ = " O" ELSE cPlayer$ = " X"
 WEND
 GOSUB drawBoard
 IF gameWon = false THEN PRINT "There was a cat! Better luck next time..." ELSE PRINT "Congratulations to"; winner$; " for winning!"
+
 
