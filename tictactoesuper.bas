@@ -593,43 +593,43 @@ SELECT CASE bbSel
             RETURN
         END IF
         RETURN
-
-
-
-        ISTHEGAMEWONPLEASEWORK:
-
-        FOR row = 1 TO 3
-            IF gameBoard(row, 1) = gameBoard(row, 2) AND gameBoard(row, 1) = gameBoard(row, 3) THEN
-                gameWon = true
-                winner$ = gameBoard(row, 1)
-                RETURN
-            END IF
-        NEXT
-
-        'checks columns, i.e. positions 1, 4, 5
-        FOR col = 1 TO 3
-            IF gameBoard(1, col) = gameBoard(2, col) AND gameBoard(1, col) = gameBoard(3, col) THEN
-                gameWon = true
-                winner$ = gameBoard(1, col)
-                RETURN
-            END IF
-        NEXT
-
-        'checks diagonals
-        IF gameBoard(1, 1) = gameBoard(2, 2) AND gameBoard(1, 1) = gameBoard(3, 3) THEN
-            gameWon = true
-            winner$ = gameBoard(1, 1)
-            RETURN
-        END IF
-        IF gameBoard(1, 3) = gameBoard(2, 2) AND gameBoard(1, 3) = gameBoard(3, 1) THEN
-            gameWon = true
-            winner$ = gameBoard(1, 3)
-            RETURN
-        END IF
-
-
-
 END SELECT
+
+
+ISTHEGAMEWONPLEASEWORK:
+
+FOR row = 1 TO 3
+    IF gameBoard(row, 1) = gameBoard(row, 2) AND gameBoard(row, 1) = gameBoard(row, 3) THEN
+        gameWon = true
+        winner$ = gameBoard(row, 1)
+        RETURN
+    END IF
+NEXT
+
+'checks columns, i.e. positions 1, 4, 5
+FOR col = 1 TO 3
+    IF gameBoard(1, col) = gameBoard(2, col) AND gameBoard(1, col) = gameBoard(3, col) THEN
+        gameWon = true
+        winner$ = gameBoard(1, col)
+        RETURN
+    END IF
+NEXT
+
+'checks diagonals
+IF gameBoard(1, 1) = gameBoard(2, 2) AND gameBoard(1, 1) = gameBoard(3, 3) THEN
+    gameWon = true
+    winner$ = gameBoard(1, 1)
+    RETURN
+END IF
+IF gameBoard(1, 3) = gameBoard(2, 2) AND gameBoard(1, 3) = gameBoard(3, 1) THEN
+    gameWon = true
+    winner$ = gameBoard(1, 3)
+    RETURN
+END IF
+
+
+
+
 
 
 RETURN
@@ -674,7 +674,6 @@ WHILE gameWon = false AND turns < 82
     IF cPlayer$ = " X" THEN cPlayer$ = " O" ELSE cPlayer$ = " X"
 WEND
 PRINT winner$; " won the game!"
-
 
 
 
