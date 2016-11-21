@@ -1,0 +1,481 @@
+SCREEN _NEWIMAGE(501, 501, 256) 'graphics
+
+GOSUB pickLocation
+CLS
+GOSUB drawBoard
+p1Health = 3
+p2Health = 3
+shoot = 1
+energy = 40
+
+DO WHILE (p1Health > 0 AND p2Health > 0)
+    DO WHILE _MOUSEINPUT
+    LOOP
+    IF energy > 0 THEN
+        IF _KEYDOWN(90) = -1 OR _KEYDOWN(122) = -1 THEN
+            _LIMIT 60
+        ELSE: _LIMIT 30
+        END IF
+        IF (_KEYDOWN(83) = -1 OR _KEYDOWN(115)) AND shoot = 1 THEN
+            GOSUB takeShot:
+            shoot = 0
+        END IF
+        IF _KEYDOWN(19200) = -1 THEN 'left
+            IF POINT(charX - 2, charY + 1) <> _RGB(255, 255, 255) AND POINT(charX - 2, charY - 1) <> _RGB(255, 255, 255) AND POINT(charX - 2, charY) <> _RGB(255, 255, 255) THEN
+                IF cP$ = "p1" THEN LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, B ELSE LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, BF
+                charX = charX - 1
+                GOSUB drawBoard
+                energy = energy - 1
+            END IF
+        END IF
+        IF _KEYDOWN(19712) = -1 THEN 'right
+            IF POINT(charX + 2, charY + 1) <> _RGB(255, 255, 255) AND POINT(charX + 2, charY - 1) <> _RGB(255, 255, 255) AND POINT(charX + 2, charY) <> _RGB(255, 255, 255) THEN
+                IF cP$ = "p1" THEN LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, B ELSE LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, BF
+                charX = charX + 1
+                GOSUB drawBoard
+                energy = energy - 1
+            END IF
+        END IF
+
+        IF _KEYDOWN(18432) = -1 THEN 'up
+            IF POINT(charX + 1, charY - 2) <> _RGB(255, 255, 255) AND POINT(charX - 1, charY - 2) <> _RGB(255, 255, 255) AND POINT(charX, charY - 2) <> _RGB(255, 255, 255) THEN
+                IF cP$ = "p1" THEN LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, B ELSE LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, BF
+                charY = charY - 1
+                GOSUB drawBoard
+                energy = energy - 1
+            END IF
+        END IF
+
+        IF _KEYDOWN(20480) = -1 THEN 'down
+            IF POINT(charX + 1, charY + 2) <> _RGB(255, 255, 255) AND POINT(charX - 1, charY + 2) <> _RGB(255, 255, 255) AND POINT(charX, charY + 2) <> _RGB(255, 255, 255) THEN
+                IF cP$ = "p1" THEN LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, B ELSE LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 0, BF
+                charY = charY + 1
+                GOSUB drawBoard
+                energy = energy - 1
+            END IF
+        END IF
+    END IF
+    IF energy <= 0 THEN
+        IF shoot = 1 THEN GOSUB takeShot
+        IF cP$ = "p1" THEN cP$ = "p2" ELSE cP$ = "p1"
+        LOCATE 2, 2
+        INPUT "Next turn...", qq
+        CLS
+        GOSUB drawBoard
+        tX = charX
+        tY = charY
+        charX = tempX
+        charY = tempY
+        tempX = tX
+        tempY = tY
+        shoot = 1
+        energy = 40
+    END IF
+LOOP
+
+GOTO endGame:
+
+drawBoard:
+LINE (0, 0)-(500, 500), 15, B 'box/arena
+LOCATE 3, 7 'all values are for charX charY
+COLOR 7
+PRINT "A" '51 39
+LOCATE 29, 4
+PRINT "B" '27 454
+LOCATE 29, 42
+PRINT "C" '331 453
+LOCATE 7, 56
+PRINT "D" '443 101
+LOCATE 19, 35
+PRINT "E" '275 295
+IF cP$ = "p1" THEN
+    LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 9, B
+    LINE (tempX - 1, tempY + 1)-(tempX + 1, tempY - 1), 9, BF
+ELSE
+    LINE (charX - 1, charY + 1)-(charX + 1, charY - 1), 9, BF
+    LINE (tempX - 1, tempY + 1)-(tempX + 1, tempY - 1), 9, B
+
+END IF
+RETURN
+'--------------------------------------------------------
+pickLocation:
+LOCATE 2, 2
+COLOR _RGB(11, 11, 11)
+PRINT "WELCOME TO MELEE HELL"
+
+COLOR 15
+LOCATE 11, 10
+PRINT "Which platform would you like to start on?"
+LOCATE 12, 10
+PRINT "Type the letter M for a map, any key to continue."
+
+platform$ = INPUT$(1)
+IF platform$ = "A" OR platform$ = "a" THEN
+    tempX = 331
+    tempY = 453
+    charX = 51
+    charY = 39
+    cP$ = "p1"
+ELSEIF platform$ = "B" OR platform$ = "b" THEN
+    tempX = 443
+    tempY = 101
+    charX = 27
+    charY = 454
+    cP$ = "p1"
+ELSEIF platform$ = "C" OR platform$ = "c" THEN
+    tempX = 51
+    tempY = 39
+    charX = 331
+    charY = 453
+    cP$ = "p1"
+ELSEIF platform$ = "D" OR platform$ = "d" THEN
+    tempX = 27
+    tempY = 454
+    charX = 443
+    charY = 101
+    cP$ = "p1"
+ELSEIF platform$ = "E" OR platform$ = "e" THEN
+    tempX = 51
+    tempY = 39
+    charX = 275
+    charY = 295
+    cP$ = "p1"
+ELSEIF platform$ = "M" OR platform$ = "m" THEN
+    CLS
+    GOSUB drawBoard
+    SLEEP
+    GOTO pickLocation:
+ELSE: CLS: GOTO pickLocation
+END IF
+RETURN
+'--------------------------------------------------------------
+takeShot:
+
+LOCATE 2, 2
+PRINT "Select Shot Direction"
+GOSUB drawBoard:
+isShooting = 1
+shotDir$ = INPUT$(1)
+IF shotDir$ = "1" THEN
+    shotX = charX - 2
+    shotY = charY + 2
+    GOSUB downLeftShoot:
+ELSEIF shotDir$ = "2" THEN
+    shotX = charX
+    shotY = charY + 2
+    GOSUB downShoot:
+ELSEIF shotDir$ = "3" THEN
+    shotX = charX + 2
+    shotY = charY + 2
+    GOSUB downRightShoot:
+ELSEIF shotDir$ = "4" THEN
+    shotX = charX - 2
+    shotY = charY
+    GOSUB leftShoot:
+ELSEIF shotDir$ = "6" THEN
+    shotX = charX + 2
+    shotY = charY
+    GOSUB rightShoot:
+ELSEIF shotDir$ = "7" THEN
+    shotX = charX - 2
+    shotY = charY - 2
+    GOSUB upLeftShoot:
+ELSEIF shotDir$ = "8" THEN
+    shotX = charX
+    shotY = charY - 2
+    GOSUB upShoot:
+ELSEIF shotDir$ = "9" THEN
+    shotX = charX + 2
+    shotY = charY - 2
+    GOSUB upRightShoot:
+ELSE GOTO takeShot:
+END IF
+LOCATE 2, 2
+PRINT "                                    "
+GOSUB drawBoard:
+RETURN
+'----------------------------------------------------------
+downLeftShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX + 1, shotY - 1), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX + 1, shotY - 1), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+    shotX = shotX - 1
+    shotY = shotY + 1
+WEND
+PSET (shotX + 2, shotY - 2), 0
+RETURN
+'--------------------------------------------------------------
+downShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX, shotY - 1), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX, shotY - 1), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+    shotY = shotY + 1
+WEND
+PSET (shotX, shotY - 2), 0
+
+RETURN
+'--------------------------------------------------------------
+downRightShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX - 1, shotY - 1), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX - 1, shotY - 1), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+    shotX = shotX + 1
+    shotY = shotY + 1
+WEND
+PSET (shotX - 2, shotY - 2), 0
+
+RETURN
+'--------------------------------------------------------------
+leftShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX + 1, shotY), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX + 1, shotY), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+    shotX = shotX - 1
+
+WEND
+PSET (shotX + 2, shotY), 0
+
+RETURN
+'--------------------------------------------------------------
+rightShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX - 1, shotY), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX - 1, shotY), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+    shotX = shotX + 1
+
+WEND
+PSET (shotX - 2, shotY), 0
+
+RETURN
+'--------------------------------------------------------------
+upLeftShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX + 1, shotY + 1), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX + 1, shotY + 1), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+    shotX = shotX - 1
+    shotY = shotY - 1
+WEND
+PSET (shotX + 2, shotY + 2), 0
+
+RETURN
+'--------------------------------------------------------------
+upShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX, shotY + 1), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX, shotY + 1), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+
+    shotY = shotY - 1
+WEND
+PSET (shotX, shotY + 2), 0
+
+RETURN
+'--------------------------------------------------------------
+upRightShoot:
+WHILE isShooting > 0
+    _LIMIT 30
+    IF POINT(shotX, shotY) = _RGB(255, 255, 255) THEN
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(54, 54, 252) THEN
+        IF cP$ = "p1" THEN
+            p2Health = p2Health - 1
+        ELSE p1Health = p1Health - 1
+        END IF
+
+        isShooting = -1
+    ELSEIF POINT(shotX, shotY) = _RGB(A8, A8, A8) THEN
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX - 1, shotY + 1), _RGB(A8, A8, A8)
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    ELSE
+        GOSUB drawBoard:
+        IF isShooting <> 1 THEN PSET (shotX - 1, shotY + 1), 0
+        LOCATE 2, 2
+        PRINT "Select Shot Direction"
+        GOSUB drawBoard
+        PSET (shotX, shotY), 14
+    END IF
+    isShooting = isShooting + 1
+    shotX = shotX + 1
+    shotY = shotY - 1
+WEND
+PSET (shotX - 2, shotY + 2), 0
+
+RETURN
+'--------------------------------------------------------------
+
+endGame:
+SLEEP 1
+CLS
+IF p1Health = 0 THEN PRINT "Congratulations player 2" ELSE PRINT "Congratulations player 1"
+
+
