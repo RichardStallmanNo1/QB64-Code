@@ -1,0 +1,89 @@
+d& = _SCREENIMAGE
+maxx& = _WIDTH(d&)
+maxy& = _HEIGHT(d&)
+SCREEN _NEWIMAGE(maxx&, maxy&, 256)
+
+'SCREEN _NEWIMAGE(500, 500, 256) 'graphics (1920, 1080, 256)
+_FULLSCREEN _STRETCH
+p1X = 50
+p1Y = 50
+p2X = 60
+p2Y = 60
+p1C = 15
+P2C = 13
+DO
+    _LIMIT 120
+    IF _KEYDOWN(19200) = -1 THEN
+        CALL delChar(p1X, p1Y)
+        CALL moveLeft(p1X)
+
+    ELSEIF _KEYDOWN(19712) = -1 THEN
+        CALL delChar(p1X, p1Y)
+        CALL moveRight(p1X)
+    END IF
+    IF _KEYDOWN(18432) = -1 THEN
+        CALL delChar(p1X, p1Y)
+        CALL moveUp(p1Y)
+    ELSEIF _KEYDOWN(20480) = -1 THEN
+        CALL delChar(p1X, p1Y)
+        CALL moveDown(p1Y)
+    END IF
+    IF _KEYDOWN(65) = -1 OR _KEYDOWN(97) = -1 THEN
+        CALL delChar(p2X, p2Y)
+        CALL moveLeft(p2X)
+    ELSEIF _KEYDOWN(68) = -1 OR _KEYDOWN(100) = -1 THEN
+        CALL delChar(p2X, p2Y)
+        CALL moveRight(p2X)
+    END IF
+    IF _KEYDOWN(87) = -1 OR _KEYDOWN(119) = -1 THEN
+        CALL delChar(p2X, p2Y)
+        CALL moveUp(p2Y)
+    ELSEIF _KEYDOWN(83) = -1 OR _KEYDOWN(115) = -1 THEN
+        CALL delChar(p2X, p2Y)
+        CALL moveDown(p2Y)
+    END IF
+
+    IF _KEYDOWN(27) THEN
+        END
+    END IF
+    IF _KEYDOWN(67) OR _KEYDOWN(99) THEN
+        CLS
+    END IF
+    CALL moveChar(p1X, p1Y, p1C)
+    CALL moveChar(p2X, p2Y, P2C)
+
+LOOP
+
+SUB moveLeft (X)
+IF X > 0 THEN
+    X = X - 1
+END IF
+END SUB
+
+SUB moveRight (X)
+IF X < 1919 THEN
+    X = X + 1
+END IF
+END SUB
+
+SUB moveUp (Y)
+IF Y > 0 THEN
+    Y = Y - 1
+END IF
+END SUB
+
+SUB moveDown (Y)
+IF Y < 1079 THEN
+    Y = Y + 1
+END IF
+END SUB
+
+
+'----------------------
+SUB delChar (X, Y)
+LINE (X - 1, Y + 1)-(X + 1, Y - 1), 0
+END SUB
+
+SUB moveChar (X, Y, C)
+LINE (X - 1, Y + 1)-(X + 1, Y - 1), C, BF
+END SUB
