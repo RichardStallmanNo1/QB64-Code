@@ -1,0 +1,7 @@
+d& = _SCREENIMAGE
+maxx = _WIDTH(d&)
+maxy = _HEIGHT(d&)
+_FREEIMAGE d&
+'----------
+SCREEN _NEWIMAGE(maxx, maxy, 256)
+_FULLSCREEN _STRETCH
