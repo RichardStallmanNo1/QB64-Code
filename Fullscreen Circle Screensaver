@@ -1,0 +1,13 @@
+d& = _SCREENIMAGE
+maxx& = _WIDTH(d&)
+maxy& = _HEIGHT(d&)
+SCREEN _NEWIMAGE(maxx&, maxy&, 256)
+_FREEIMAGE d&
+_FULLSCREEN _STRETCH
+_MOUSEHIDE
+DO
+    _LIMIT 60 'change this to change rate of circle, 60 is 60 per second, 1 is 1 per second
+    CIRCLE (_WIDTH / 2, _HEIGHT / 2), INT(RND * 1100) + 1, INT(RND * 14) + 1
+LOOP UNTIL INKEY$ <> ""
+SYSTEM
+
